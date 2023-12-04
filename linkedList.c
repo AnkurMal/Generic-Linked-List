@@ -63,7 +63,7 @@ void __invalid_data_type(Node **list, ...)
 */
 void PrintData(Node *list, int64_t index)
 {
-    __assert(index>0 && index<list->length, list, "Printing data at index %lld of LinkedList of size %zu", index, list->length);
+    __assert(index>0 && index<list->length, list, "Printing data at index %lld of LinkedList of size %lld", index, list->length);
 
     for(int64_t i=0; i<index; i++)
         list = list->next;
