@@ -31,7 +31,7 @@ typedef struct Node
 
 void __insert_data(Node **list, void* dataPtr, DataType dataType);
 void __insert_char(Node **list, char data);
-void __insert_int(Node **list, long int data);
+void __insert_int(Node **list, long data);
 void __insert_double(Node **list, double data);
 void __insert_string(Node **list, const char* data);
 void __invalid_data_type(Node **list, ...);
@@ -48,8 +48,9 @@ void FreeList(Node *list);
 */
 #define InsertData(listPtr, data) _Generic((data), \
         char:     __insert_char, \
+        short:    __insert_int, \
         int:      __insert_int, \
-        long int: __insert_int, \
+        long:     __insert_int, \
         float:    __insert_double, \
         double:   __insert_double, \
         char*:    __insert_string, \
