@@ -1,29 +1,38 @@
 #include "linkedList.h"
 
+#define CHECK_DATA_AND_INSERT(listPtr2, data, dataPtr, dataType) \
+    if(dataPtr==NULL) { \
+        puts("Not enough memory!"); \
+        return; } \
+    *dataPtr = data; \
+    __insert_data(listPtr2, (void*)dataPtr, dataType);
+
 void __insert_char(Node **list, char data)
 {
     char* dataPtr = malloc(sizeof(char));
-    *dataPtr = data;
-    __insert_data(list, (void*)dataPtr, CHAR);
+    CHECK_DATA_AND_INSERT(list, data, dataPtr, CHAR);
 }
 
-void __insert_int(Node **list, long int data)
+void __insert_int(Node **list, long data)
 {   
-    long int* dataPtr = malloc(sizeof(long int));
-    *dataPtr = data;
-    __insert_data(list, (void*)dataPtr, INT);
+    long* dataPtr = malloc(sizeof(long));
+    CHECK_DATA_AND_INSERT(list, data, dataPtr, INT);
 }
+
 
 void __insert_double(Node **list, double data)
 {   
     double* dataPtr = malloc(sizeof(double));
-    *dataPtr = data;
-    __insert_data(list, (void*)dataPtr, DOUBLE);
+    CHECK_DATA_AND_INSERT(list, data, dataPtr, DOUBLE);
 }
 
 void __insert_string(Node **list, const char* data)
 {
     char* dataPtr = malloc(strlen(data)+1);
+    if(dataPtr==NULL) { 
+        puts("Not enough memory!"); 
+        return; }
+        
     memcpy(dataPtr, data, strlen(data)+1);
     __insert_data(list, (void*)dataPtr, STRING);
 }
@@ -31,6 +40,9 @@ void __insert_string(Node **list, const char* data)
 void __insert_data(Node **list, void* dataPtr, DataType dataType)
 {   
     Node *newNode = malloc(sizeof(Node));
+    if(newNode==NULL) { 
+        puts("Not enough memory!"); 
+        return; }
 
     newNode->dataType = dataType;
     newNode->data = dataPtr;
@@ -71,7 +83,7 @@ void PrintData(Node *list, int64_t index)
     switch (list->dataType)
     {
         case INT:
-            printf("%ld\n", *(long int*)list->data);
+            printf("%ld\n", *(long*)list->data);
             break;
         case DOUBLE:
             printf("%f\n", *(double*)list->data);
@@ -103,9 +115,9 @@ void PrintList(Node *list)
         {
             case INT:
                 if(c<length)
-                    printf("%ld, ", *(long int*)list->data);
+                    printf("%ld, ", *(long*)list->data);
                 else
-                    printf("%ld]\n", *(long int*)list->data);
+                    printf("%ld]\n", *(long*)list->data);
                 break;
             case DOUBLE:
                 if(c<length)
