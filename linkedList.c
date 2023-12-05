@@ -2,7 +2,7 @@
 
 #define CHECK_DATA_AND_INSERT(listPtr2, data, dataPtr, dataType) \
     if(dataPtr==NULL) { \
-        puts("Not enough memory!"); \
+        puts("WARNING: Not enough memory!"); \
         return; } \
     *dataPtr = data; \
     __insert_data(listPtr2, (void*)dataPtr, dataType);
@@ -30,9 +30,9 @@ void __insert_string(Node **list, const char* data)
 {
     char* dataPtr = malloc(strlen(data)+1);
     if(dataPtr==NULL) { 
-        puts("Not enough memory!"); 
+        puts("WARNING: Not enough memory!"); 
         return; }
-        
+
     memcpy(dataPtr, data, strlen(data)+1);
     __insert_data(list, (void*)dataPtr, STRING);
 }
@@ -41,7 +41,7 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType)
 {   
     Node *newNode = malloc(sizeof(Node));
     if(newNode==NULL) { 
-        puts("Not enough memory!"); 
+        puts("WARNING: Not enough memory!"); 
         return; }
 
     newNode->dataType = dataType;
@@ -86,7 +86,7 @@ void PrintData(Node *list, int64_t index)
             printf("%ld\n", *(long*)list->data);
             break;
         case DOUBLE:
-            printf("%f\n", *(double*)list->data);
+            printf("%lf\n", *(double*)list->data);
             break;
         case STRING:
             printf("%s\n", (char*)list->data);
@@ -121,9 +121,9 @@ void PrintList(Node *list)
                 break;
             case DOUBLE:
                 if(c<length)
-                    printf("%f, ", *(double*)list->data);
+                    printf("%lf, ", *(double*)list->data);
                 else
-                    printf("%f]\n", *(double*)list->data);
+                    printf("%lf]\n", *(double*)list->data);
                 break;
             case STRING:
                 if(c<length)
