@@ -24,7 +24,6 @@ typedef enum DataType
 typedef struct Node
 {
     void* data;
-    int64_t length;
     struct Node *next;
     DataType dataType;
 }Node;
@@ -36,6 +35,7 @@ void __insert_double(Node **list, double data);
 void __insert_string(Node **list, const char* data);
 void __invalid_data_type(Node **list, ...);
 
+int64_t Length(Node *list);
 void PrintData(Node *list, int64_t index);
 void PrintList(Node *list);
 void FreeList(Node *list);
@@ -47,14 +47,15 @@ void FreeList(Node *list);
  * @note For a character data, it should be explicitely converted to char.
 */
 #define InsertData(listPtr, data) _Generic((data), \
-        char:     __insert_char, \
-        short:    __insert_int, \
-        int:      __insert_int, \
-        long:     __insert_int, \
-        float:    __insert_double, \
-        double:   __insert_double, \
-        char*:    __insert_string, \
-        default:  __invalid_data_type \
+        char:        __insert_char, \
+        short:       __insert_int, \
+        int:         __insert_int, \
+        long:        __insert_int, \
+        float:       __insert_double, \
+        double:      __insert_double, \
+        char*:       __insert_string, \
+        const char*: __insert_string, \
+        default:     __invalid_data_type \
     )(&listPtr, data)
     
 #endif
