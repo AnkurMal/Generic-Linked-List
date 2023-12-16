@@ -19,7 +19,6 @@ void __insert_int(Node **list, long data)
     CHECK_DATA_AND_INSERT(list, data, dataPtr, INT);
 }
 
-
 void __insert_double(Node **list, double data)
 {   
     double* dataPtr = malloc(sizeof(double));
@@ -49,10 +48,7 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType)
     newNode->next = NULL;
     
     if((*list)==NULL)
-    {
         *list = newNode;
-        (*list)->length = 0;
-    }
     else
     {
         Node *tempNode = *list;
@@ -60,12 +56,27 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType)
             tempNode = tempNode->next;
         tempNode->next = newNode;
     }
-    (*list)->length++;
 }
 
 void __invalid_data_type(Node **list, ...)
 {
     __assert(0, *list, "%s", "Invalid data type");
+}
+
+/**
+ * Returns the number of elements in the list.
+ * @param *list the list pointer
+ * @return the number of elements in the list
+*/
+int64_t Length(Node *list)
+{
+    int64_t length = 0;
+    while (list!=NULL)
+    {
+        length++;
+        list = list->next;
+    }
+    return length;
 }
 
 /**
@@ -75,7 +86,8 @@ void __invalid_data_type(Node **list, ...)
 */
 void PrintData(Node *list, int64_t index)
 {
-    __assert(index>0 && index<list->length, list, "Printing data at index %lld of LinkedList of size %lld", index, list->length);
+    int64_t length = Length(list);
+    __assert(index>0 && index<length, list, "Printing data at index %lld of LinkedList of size %lld", index, length);
 
     for(int64_t i=0; i<index; i++)
         list = list->next;
@@ -105,7 +117,8 @@ void PrintData(Node *list, int64_t index)
 */
 void PrintList(Node *list)
 {
-    int c = 0, length = list->length;
+    int c = 0;
+    int64_t length = Length(list);
     
     printf("[");
     while (list!=NULL)
