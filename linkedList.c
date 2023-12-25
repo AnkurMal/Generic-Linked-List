@@ -1,31 +1,31 @@
 #include "linkedList.h"
 
-#define CHECK_DATA_AND_INSERT(listPtr2, data, dataPtr, dataType) \
+#define CHECK_DATA_AND_INSERT(listPtr2, data, dataPtr, dataType, index) \
     if(dataPtr==NULL) { \
         puts("WARNING: Not enough memory!"); \
         return; } \
     *dataPtr = data; \
-    __insert_data(listPtr2, (void*)dataPtr, dataType);
+    __insert_data(listPtr2, (void*)dataPtr, dataType, index);
 
-void __insert_char(Node **list, char data)
+void __insert_char(Node **list, char data, int64_t index)
 {
     char* dataPtr = malloc(sizeof(char));
-    CHECK_DATA_AND_INSERT(list, data, dataPtr, CHAR);
+    CHECK_DATA_AND_INSERT(list, data, dataPtr, CHAR, index);
 }
 
-void __insert_int(Node **list, long data)
+void __insert_int(Node **list, long data, int64_t index)
 {   
     long* dataPtr = malloc(sizeof(long));
-    CHECK_DATA_AND_INSERT(list, data, dataPtr, INT);
+    CHECK_DATA_AND_INSERT(list, data, dataPtr, INT, index);
 }
 
-void __insert_double(Node **list, double data)
+void __insert_double(Node **list, double data, int64_t index)
 {   
     double* dataPtr = malloc(sizeof(double));
-    CHECK_DATA_AND_INSERT(list, data, dataPtr, DOUBLE);
+    CHECK_DATA_AND_INSERT(list, data, dataPtr, DOUBLE, index);
 }
 
-void __insert_string(Node **list, const char* data)
+void __insert_string(Node **list, const char* data, int64_t index)
 {
     char* dataPtr = malloc(strlen(data)+1);
     if(dataPtr==NULL) { 
@@ -33,13 +33,14 @@ void __insert_string(Node **list, const char* data)
         return; }
 
     memcpy(dataPtr, data, strlen(data)+1);
-    __insert_data(list, (void*)dataPtr, STRING);
+    __insert_data(list, (void*)dataPtr, STRING, index);
 }
 
-void __insert_data(Node **list, void* dataPtr, DataType dataType)
+void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
 {   
     Node *newNode = malloc(sizeof(Node));
     if(newNode==NULL) { 
+        free(dataPtr);
         puts("WARNING: Not enough memory!"); 
         return; }
 
@@ -52,8 +53,10 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType)
     else
     {
         Node *tempNode = *list;
-        while (tempNode->next!=NULL)
+        for(int64_t i=0; i<index-1; i++)
             tempNode = tempNode->next;
+            
+        newNode->next = tempNode->next;
         tempNode->next = newNode;
     }
 }
@@ -68,7 +71,7 @@ void __invalid_data_type(Node **list, ...)
  * @param *list the list pointer
  * @return the number of elements in the list
 */
-int64_t Length(Node *list)
+int64_t listLength(Node *list)
 {
     int64_t length = 0;
     while (list!=NULL)
@@ -84,9 +87,9 @@ int64_t Length(Node *list)
  * @param *list the list pointer
  * @param index index of the data to be printed
 */
-void PrintData(Node *list, int64_t index)
+void printData(Node *list, int64_t index)
 {
-    int64_t length = Length(list);
+    int64_t length = listLength(list);
     __assert(index>0 && index<length, list, "Printing data at index %lld of LinkedList of size %lld", index, length);
 
     for(int64_t i=0; i<index; i++)
@@ -115,10 +118,10 @@ void PrintData(Node *list, int64_t index)
  * Prints the entire list.
  * @param *list the list pointer
 */
-void PrintList(Node *list)
+void printList(Node *list)
 {
     int c = 0;
-    int64_t length = Length(list);
+    int64_t length = listLength(list);
     
     printf("[");
     while (list!=NULL)
@@ -161,7 +164,7 @@ void PrintList(Node *list)
  * Frees the enitre list.
  * @param *list the list pointer
 */
-void FreeList(Node *list)
+void freeList(Node *list)
 {
     Node *temp;
     while (list!=NULL)
