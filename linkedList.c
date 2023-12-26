@@ -38,6 +38,13 @@ void __insert_string(Node **list, const char* data, int64_t index)
 
 void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
 {   
+    int64_t length = listLength(*list);
+    if(index<0 || index>length)
+    {
+        free(dataPtr);
+        __assert(0, *list, "Inserting data at index %lld of LinkedList of size %lld", index, length);
+    }
+
     Node *newNode = malloc(sizeof(Node));
     if(newNode==NULL) { 
         free(dataPtr);
