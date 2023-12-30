@@ -1,20 +1,11 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
+#include <stdlib.h>
 
-#define __assert(expression, listPtr, format, ...) \
-    do { \
-        if (!(expression)) { \
-            fprintf(stderr, "Error in file %s; line %d in function %s:\n", __FILE__, __LINE__, __func__); \
-            fprintf(stderr, format "\n", ##__VA_ARGS__); \
-            freeList(listPtr); \
-            exit(EXIT_FAILURE); \
-        } \
-    } while(0)
+// Initializes the list to NULL.
+#define initList() NULL
 
 typedef enum DataType
 {
@@ -41,16 +32,16 @@ void printList(Node *list);
 void freeList(Node *list);
 
 /**
- * Inserts the specified data at the end of the list.
- * @param listPtr pointer to the list (should be initialzed to NULL)
+ * @brief Inserts the specified data at the end of the list.
+ * @param listPtr pointer to the list
  * @param data data to be inserted to the list
  * @note For a character data, it should be explicitely converted to char.
 */
 #define insertData(listPtr, data) insertDataAt(listPtr, data, listLength(listPtr))
 
 /**
- * Inserts the specified data at the specified index of the list.
- * @param listPtr pointer to the list (should be initialzed to NULL)
+ * @brief Inserts the specified data at the specified index of the list.
+ * @param listPtr pointer to the list
  * @param data data to be inserted to the list
  * @param index index at which the specified data is to be inserted
  * @note For a character data, it should be explicitely converted to char.
