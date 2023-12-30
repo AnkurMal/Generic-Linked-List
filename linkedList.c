@@ -1,5 +1,18 @@
 #include "linkedList.h"
 
+#include <stdio.h>
+#include <string.h>
+
+#define __assert(expression, listPtr, format, ...) \
+    do { \
+        if (!(expression)) { \
+            fprintf(stderr, "Error in file %s; line %d in function %s:\n", __FILE__, __LINE__, __func__); \
+            fprintf(stderr, format "\n", ##__VA_ARGS__); \
+            freeList(listPtr); \
+            exit(EXIT_FAILURE); \
+        } \
+    } while(0)
+
 #define CHECK_DATA_AND_INSERT(listPtr2, data, dataPtr, dataType, index) \
     if(dataPtr==NULL) { \
         puts("WARNING: Not enough memory!"); \
@@ -36,6 +49,11 @@ void __insert_string(Node **list, const char* data, int64_t index)
     __insert_data(list, (void*)dataPtr, STRING, index);
 }
 
+void __invalid_data_type(Node **list, ...)
+{
+    __assert(0, *list, "%s", "Invalid data type");
+}
+
 void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
 {   
     int64_t length = listLength(*list);
@@ -68,13 +86,8 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
     }
 }
 
-void __invalid_data_type(Node **list, ...)
-{
-    __assert(0, *list, "%s", "Invalid data type");
-}
-
 /**
- * Returns the number of elements in the list.
+ * @brief Returns the number of elements in the list.
  * @param *list the list pointer
  * @return the number of elements in the list
 */
@@ -90,7 +103,7 @@ int64_t listLength(Node *list)
 }
 
 /**
- * Prints the data at the specified index in the list.
+ * @brief Prints the data at the specified index in the list.
  * @param *list the list pointer
  * @param index index of the data to be printed
 */
@@ -116,13 +129,11 @@ void printData(Node *list, int64_t index)
         case CHAR:
             printf("%c\n", *(char*)list->data);
             break;
-        default:
-            break;
     }
 }
 
 /**
- * Prints the entire list.
+ * @brief Prints the entire list.
  * @param *list the list pointer
 */
 void printList(Node *list)
@@ -160,15 +171,13 @@ void printList(Node *list)
                 else
                     printf("\'%c\']\n", *(char*)list->data);
                 break;
-            default:
-                break;
         }
         list = list->next;
     }    
 }
 
 /**
- * Frees the enitre list.
+ * @brief Frees the enitre list.
  * @param *list the list pointer
 */
 void freeList(Node *list)
