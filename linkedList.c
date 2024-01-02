@@ -13,7 +13,7 @@
         } \
     } while(0)
 
-#define CHECK_DATA_AND_INSERT(listPtr2, data, dataPtr, dataType, index) \
+#define __check_and_insert(listPtr2, data, dataPtr, dataType, index) \
     if(dataPtr==NULL) { \
         puts("WARNING: Not enough memory!"); \
         return; } \
@@ -23,19 +23,19 @@
 void __insert_char(Node **list, char data, int64_t index)
 {
     char* dataPtr = malloc(sizeof(char));
-    CHECK_DATA_AND_INSERT(list, data, dataPtr, CHAR, index);
+    __check_and_insert(list, data, dataPtr, CHAR, index);
 }
 
 void __insert_int(Node **list, long data, int64_t index)
 {   
     long* dataPtr = malloc(sizeof(long));
-    CHECK_DATA_AND_INSERT(list, data, dataPtr, INT, index);
+    __check_and_insert(list, data, dataPtr, INT, index);
 }
 
 void __insert_double(Node **list, double data, int64_t index)
 {   
     double* dataPtr = malloc(sizeof(double));
-    CHECK_DATA_AND_INSERT(list, data, dataPtr, DOUBLE, index);
+    __check_and_insert(list, data, dataPtr, DOUBLE, index);
 }
 
 void __insert_string(Node **list, const char* data, int64_t index)
