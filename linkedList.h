@@ -48,10 +48,7 @@ void freeList(Node *list);
 */
 #define insertDataAt(listPtr, data, index) _Generic((data), \
         char:        __insert_char, \
-        short:       __insert_int, \
         int:         __insert_int, \
-        long:        __insert_int, \
-        float:       __insert_double, \
         double:      __insert_double, \
         char*:       __insert_string, \
         const char*: __insert_string, \
