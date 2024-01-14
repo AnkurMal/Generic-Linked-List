@@ -13,12 +13,12 @@
         } \
     } while(0)
 
-#define __check_and_insert(listPtr2, data, dataPtr, dataType, index) \
+#define __check_and_insert(listPtrToPtr, data, dataPtr, dataType, index) \
     if(dataPtr==NULL) { \
         puts("WARNING: Not enough memory!"); \
         return; } \
     *dataPtr = data; \
-    __insert_data(listPtr2, (void*)dataPtr, dataType, index);
+    __insert_data(listPtrToPtr, (void*)dataPtr, dataType, index);
 
 void __insert_char(Node **list, char data, int64_t index)
 {
@@ -51,7 +51,7 @@ void __insert_string(Node **list, const char* data, int64_t index)
 
 void __invalid_data_type(Node **list, ...)
 {
-    __assert(0, *list, "%s", "Invalid data type");
+    __assert(0, *list, "%s", "Invalid data type. Only allowed types are: char, int, double and char* (string).");
 }
 
 void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
@@ -60,7 +60,7 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
     if(index<0 || index>length)
     {
         free(dataPtr);
-        __assert(0, *list, "Inserting data at index %lld of LinkedList of size %lld", index, length);
+        __assert(0, *list, "Inserting data at index %lld of LinkedList of size %lld.", index, length);
     }
 
     Node *newNode = malloc(sizeof(Node));
@@ -110,7 +110,7 @@ int64_t listLength(Node *list)
 void printData(Node *list, int64_t index)
 {
     int64_t length = listLength(list);
-    __assert(index>0 && index<length, list, "Printing data at index %lld of LinkedList of size %lld", index, length);
+    __assert(index>0 && index<length, list, "Printing data at index %lld of LinkedList of size %lld.", index, length);
 
     for(int64_t i=0; i<index; i++)
         list = list->next;
