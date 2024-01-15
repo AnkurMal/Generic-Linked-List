@@ -26,9 +26,9 @@ void __insert_char(Node **list, char data, int64_t index)
     __check_and_insert(list, data, dataPtr, CHAR, index);
 }
 
-void __insert_int(Node **list, long data, int64_t index)
+void __insert_int(Node **list, int data, int64_t index)
 {   
-    long* dataPtr = malloc(sizeof(long));
+    long* dataPtr = malloc(sizeof(int));
     __check_and_insert(list, data, dataPtr, INT, index);
 }
 
@@ -118,7 +118,7 @@ void printData(Node *list, int64_t index)
     switch (list->dataType)
     {
         case INT:
-            printf("%ld\n", *(long*)list->data);
+            printf("%d\n", *(int*)list->data);
             break;
         case DOUBLE:
             printf("%lf\n", *(double*)list->data);
@@ -149,9 +149,9 @@ void printList(Node *list)
         {
             case INT:
                 if(c<length)
-                    printf("%ld, ", *(long*)list->data);
+                    printf("%d, ", *(int*)list->data);
                 else
-                    printf("%ld]\n", *(long*)list->data);
+                    printf("%d]\n", *(int*)list->data);
                 break;
             case DOUBLE:
                 if(c<length)
