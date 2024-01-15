@@ -21,7 +21,7 @@ typedef struct Node
 
 void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index);
 void __insert_char(Node **list, char data, int64_t index);
-void __insert_int(Node **list, long data, int64_t index);
+void __insert_int(Node **list, int data, int64_t index);
 void __insert_double(Node **list, double data, int64_t index);
 void __insert_string(Node **list, const char* data, int64_t index);
 void __invalid_data_type(Node **list, ...);
