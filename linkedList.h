@@ -7,6 +7,12 @@
 // Initializes the list to NULL.
 #define initList() NULL
 
+/**
+ * @brief Frees the enitre list.
+ * @param listPtr the list pointer
+*/
+#define freeList(listPtr) __free_list(&listPtr)
+
 typedef enum DataType
 {
     CHAR, INT, DOUBLE, STRING
@@ -25,11 +31,11 @@ void __insert_int(Node **list, int data, int64_t index);
 void __insert_double(Node **list, double data, int64_t index);
 void __insert_string(Node **list, const char* data, int64_t index);
 void __invalid_data_type(Node **list, ...);
+void __free_list(Node **list);
 
 int64_t listLength(Node *list);
 void printData(Node *list, int64_t index);
 void printList(Node *list);
-void freeList(Node *list);
 
 /**
  * @brief Inserts the specified data at the end of the list.
