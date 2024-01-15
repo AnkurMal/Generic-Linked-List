@@ -176,17 +176,14 @@ void printList(Node *list)
     }    
 }
 
-/**
- * @brief Frees the enitre list.
- * @param *list the list pointer
-*/
-void freeList(Node *list)
+void __free_list(Node **list)
 {
     Node *temp;
-    while (list!=NULL)
+    
+    while ((*list)!=NULL)
     {
-        temp = list;
-        list = list->next;
+        temp = *list;
+        *list = (*list)->next;
         free(temp->data);
         free(temp);
     }
