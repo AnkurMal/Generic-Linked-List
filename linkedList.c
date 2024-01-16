@@ -18,7 +18,7 @@
         puts("WARNING: Not enough memory!"); \
         return; } \
     *dataPtr = data; \
-    __insert_data(listPtrToPtr, (void*)dataPtr, dataType, index);
+    __insert_data(listPtrToPtr, dataPtr, dataType, index);
 
 void __insert_char(Node **list, char data, int64_t index)
 {
@@ -46,7 +46,7 @@ void __insert_string(Node **list, const char* data, int64_t index)
         return; }
 
     memcpy(dataPtr, data, strlen(data)+1);
-    __insert_data(list, (void*)dataPtr, STRING, index);
+    __insert_data(list, dataPtr, STRING, index);
 }
 
 void __invalid_data_type(Node **list, ...)
@@ -84,6 +84,21 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
         newNode->next = tempNode->next;
         tempNode->next = newNode;
     }
+}
+
+void __free_list(Node **list)
+{
+    Node *temp;
+    Node *listPtr = *list;
+    
+    while (listPtr!=NULL)
+    {
+        temp = listPtr;
+        listPtr = listPtr->next;
+        free(temp->data);
+        free(temp);
+    }
+    *list = NULL;
 }
 
 /**
@@ -148,43 +163,23 @@ void printList(Node *list)
         switch (list->dataType)
         {
             case INT:
-                if(c<length)
-                    printf("%d, ", *(int*)list->data);
-                else
-                    printf("%d]\n", *(int*)list->data);
+                if(c<length)  printf("%d, ", *(int*)list->data);
+                else          printf("%d", *(int*)list->data);
                 break;
             case DOUBLE:
-                if(c<length)
-                    printf("%lf, ", *(double*)list->data);
-                else
-                    printf("%lf]\n", *(double*)list->data);
+                if(c<length) printf("%lf, ", *(double*)list->data);
+                else         printf("%lf", *(double*)list->data);
                 break;
             case STRING:
-                if(c<length)
-                    printf("\"%s\", ", (char*)list->data);
-                else
-                    printf("\"%s\"]\n", (char*)list->data);
+                if(c<length) printf("\"%s\", ", (char*)list->data);
+                else         printf("\"%s\"", (char*)list->data);
                 break;
             case CHAR:
-                if(c<length)
-                    printf("\'%c\', ", *(char*)list->data);
-                else
-                    printf("\'%c\']\n", *(char*)list->data);
+                if(c<length) printf("\'%c\', ", *(char*)list->data);
+                else         printf("\'%c\'", *(char*)list->data);
                 break;
         }
         list = list->next;
-    }    
-}
-
-void __free_list(Node **list)
-{
-    Node *temp;
-    
-    while ((*list)!=NULL)
-    {
-        temp = *list;
-        *list = (*list)->next;
-        free(temp->data);
-        free(temp);
     }
+    printf("]\n");    
 }
