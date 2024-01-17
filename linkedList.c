@@ -28,7 +28,7 @@ void __insert_char(Node **list, char data, int64_t index)
 
 void __insert_int(Node **list, int data, int64_t index)
 {   
-    long* dataPtr = malloc(sizeof(int));
+    int* dataPtr = malloc(sizeof(int));
     __check_and_insert(list, data, dataPtr, INT, index);
 }
 
