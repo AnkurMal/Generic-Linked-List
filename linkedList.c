@@ -20,6 +20,28 @@
     *dataPtr = data; \
     __insert_data(listPtrToPtr, dataPtr, dataType, index);
 
+#define __remove(listPtrToPtr, nodeDataType, data, remvDataType) \
+    Node *listPtr = *listPtrToPtr; \
+    Node *nextPtr = listPtr->next; \
+    \
+    if(listPtr->dataType==nodeDataType) \
+        if((*(remvDataType*)listPtr->data)==data) {\
+            *listPtrToPtr = nextPtr; \
+            free(listPtr->data); \
+            free(listPtr); \
+            nextPtr = NULL; }\
+    \
+    while (nextPtr!=NULL) { \
+        if(nextPtr->dataType==nodeDataType) \
+            if((*(remvDataType*)nextPtr->data)==data) { \
+                listPtr->next = nextPtr->next; \
+                free(nextPtr->data); \
+                free(nextPtr); \
+                break; } \
+        \
+        listPtr = listPtr->next; \
+        nextPtr = listPtr->next; }
+
 void __insert_char(Node **list, char data, int64_t index)
 {
     char* dataPtr = malloc(sizeof(char));
@@ -47,11 +69,6 @@ void __insert_string(Node **list, const char* data, int64_t index)
 
     memcpy(dataPtr, data, strlen(data)+1);
     __insert_data(list, dataPtr, STRING, index);
-}
-
-void __invalid_data_type(Node **list, ...)
-{
-    __assert(0, *list, "%s", "Invalid data type. Only allowed types are: char, int, double and char* (string).");
 }
 
 void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
@@ -86,6 +103,57 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
     }
 }
 
+void __remove_char(Node **list, char data)
+{
+    __remove(list, CHAR, data, char);
+}
+
+void __remove_int(Node **list, int data)
+{
+    __remove(list, INT, data, int);
+}
+
+void __remove_double(Node **list, double data)
+{
+    __remove(list, DOUBLE, data, double);
+}
+
+void __remove_string(Node **list, const char* data)
+{
+    __remove(list, STRING, data, char*);
+}
+
+void __remove_data_at(Node **list, int64_t index)
+{
+    int64_t length = listLength(*list);
+    __assert(index>=0 && index<length, *list, "Removing data from index %lld of LinkedList of size %lld.", index, length);
+    
+    if(index==0)
+    {
+        Node *tempPtr = *list;
+        *list = (*list)->next;
+        free(tempPtr->data);
+        free(tempPtr);
+    }
+    else
+    {
+        Node *listPtr = *list;
+        for(int64_t i=0; i<index-1; i++)
+            listPtr = listPtr->next;
+
+        Node *tempPtr = listPtr->next;
+        listPtr->next = tempPtr->next;
+
+        free(tempPtr->data);
+        free(tempPtr);
+    }
+}
+
+void __invalid_data_type(Node **list, ...)
+{
+    __assert(0, *list, "%s", "Invalid data type. Only allowed types are: char, int, double and char* (string).");
+}
+
 void __free_list(Node **list)
 {
     Node *temp;
@@ -99,6 +167,18 @@ void __free_list(Node **list)
         free(temp);
     }
     *list = NULL;
+}
+
+/**
+ * @brief Checks if the list is empty.
+ * @param *list the list pointer
+ * @return true if the list contains no data, otherwise false
+*/
+bool isEmpty(Node *list)
+{
+    if(!listLength(list))
+        return true;
+    return false;
 }
 
 /**
@@ -125,7 +205,7 @@ int64_t listLength(Node *list)
 void printData(Node *list, int64_t index)
 {
     int64_t length = listLength(list);
-    __assert(index>0 && index<length, list, "Printing data at index %lld of LinkedList of size %lld.", index, length);
+    __assert(index>=0 && index<length, list, "Printing data at index %lld of LinkedList of size %lld.", index, length);
 
     for(int64_t i=0; i<index; i++)
         list = list->next;
