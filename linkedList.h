@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 // Initializes the list to NULL.
 #define initList() NULL
@@ -30,9 +31,17 @@ void __insert_char(Node **list, char data, int64_t index);
 void __insert_int(Node **list, int data, int64_t index);
 void __insert_double(Node **list, double data, int64_t index);
 void __insert_string(Node **list, const char* data, int64_t index);
+
+void __remove_char(Node **list, char data);
+void __remove_int(Node **list, int data);
+void __remove_double(Node **list, double data);
+void __remove_string(Node **list, const char* data);
+void __remove_data_at(Node **list, int64_t index);
+
 void __invalid_data_type(Node **list, ...);
 void __free_list(Node **list);
 
+bool isEmpty(Node *list);
 int64_t listLength(Node *list);
 void printData(Node *list, int64_t index);
 void printList(Node *list);
@@ -43,7 +52,7 @@ void printList(Node *list);
  * @param data data to be inserted to the list
  * @note For a character data, it should be explicitely converted to char.
 */
-#define insertData(listPtr, data) insertDataAt(listPtr, data, listLength(listPtr))
+#define insert(listPtr, data) insertAt(listPtr, data, listLength(listPtr))
 
 /**
  * @brief Inserts the specified data at the specified index of the list.
@@ -52,7 +61,7 @@ void printList(Node *list);
  * @param index index at which the specified data is to be inserted
  * @note For a character data, it should be explicitely converted to char.
 */
-#define insertDataAt(listPtr, data, index) _Generic((data), \
+#define insertAt(listPtr, data, index) _Generic((data), \
         char:        __insert_char, \
         int:         __insert_int, \
         double:      __insert_double, \
@@ -60,5 +69,29 @@ void printList(Node *list);
         const char*: __insert_string, \
         default:     __invalid_data_type \
     )(&listPtr, data, index)
-    
+
+/**
+ * @brief Removes the specified data from the list.
+ * @param listPtr pointer to the list
+ * @param data data to be removed from the list
+ * @note For a character data, it should be explicitely converted to char.
+*/
+#define removeData(listPtr, data) _Generic((data), \
+        char:        __remove_char, \
+        int:         __remove_int, \
+        double:      __remove_double, \
+        char*:       __remove_string, \
+        const char*: __remove_string, \
+        default:     __invalid_data_type \
+    )(&listPtr, data)
+
+/**
+ * @brief Removes the specified data from the specified index of the list.
+ * @param listPtr pointer to the list
+ * @param data data to be removed from the list
+ * @param index index from which the specified data is to be removed
+ * @note For a character data, it should be explicitely converted to char.
+*/
+#define removeDataAt(listPtr, index) __remove_data_at(&listPtr, index)
+
 #endif
