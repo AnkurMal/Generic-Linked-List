@@ -38,6 +38,11 @@ void __remove_double(Node **list, double data);
 void __remove_string(Node **list, const char* data);
 void __remove_data_at(Node **list, int64_t index);
 
+int64_t __index_of_char(Node **list, char data);
+int64_t __index_of_int(Node **list, int data);
+int64_t __index_of_double(Node **list, double data);
+int64_t __index_of_string(Node **list, const char* data);
+
 void __invalid_data_type(Node **list, ...);
 void __free_list(Node **list);
 
@@ -88,10 +93,24 @@ void printList(Node *list);
 /**
  * @brief Removes the specified data from the specified index of the list.
  * @param listPtr pointer to the list
- * @param data data to be removed from the list
  * @param index index from which the specified data is to be removed
- * @note For a character data, it should be explicitely converted to char.
 */
 #define removeDataAt(listPtr, index) __remove_data_at(&listPtr, index)
 
+/**
+ * @brief Returns the index of the first occurrence of the specified data in the list, or -1 if the list does not contain the data.
+ * @param listPtr pointer to the list
+ * @param data data to search for in the list
+ * @returns the index of the first occurrence of the specified data in the list, or -1 if the list does not contain the data
+ * @note For a character data, it should be explicitely converted to char.
+*/
+#define indexOf(listPtr, data) _Generic((data), \
+        char:        __index_of_char, \
+        int:         __index_of_int, \
+        double:      __index_of_double, \
+        char*:       __index_of_string, \
+        const char*: __index_of_string, \
+        default:     __invalid_data_type \
+    )(&listPtr, data)
+    
 #endif
