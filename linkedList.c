@@ -42,6 +42,17 @@
         listPtr = listPtr->next; \
         nextPtr = listPtr->next; }
 
+#define __search_data(listPtr, nodeDataType, data, srchDataType, index) \
+    int64_t index = 0; \
+    while (listPtr!=NULL) { \
+        if(listPtr->dataType==nodeDataType) \
+            if((data)==(*(srchDataType*)listPtr->data)) break; \
+        \
+        listPtr = listPtr->next; \
+        ++index; } \
+    if(listPtr==NULL) return -1; \
+    return index;
+
 void __insert_char(Node **list, char data, int64_t index)
 {
     char* dataPtr = malloc(sizeof(char));
@@ -120,7 +131,29 @@ void __remove_double(Node **list, double data)
 
 void __remove_string(Node **list, const char* data)
 {
-    __remove(list, STRING, data, char*);
+    Node *listPtr = *list; 
+    Node *nextPtr = listPtr->next; 
+    
+    if(listPtr->dataType==STRING) 
+        if(strcmp(listPtr->data, data)==0) {
+            *list = nextPtr; 
+            free(listPtr->data); 
+            free(listPtr); 
+            nextPtr = NULL; 
+        }
+    
+    while (nextPtr!=NULL) { 
+        if(nextPtr->dataType==STRING) 
+            if(strcmp(nextPtr->data, data)==0) { 
+                listPtr->next = nextPtr->next; 
+                free(nextPtr->data); 
+                free(nextPtr); 
+                break; 
+            } 
+        
+        listPtr = listPtr->next; 
+        nextPtr = listPtr->next; 
+    }
 }
 
 void __remove_data_at(Node **list, int64_t index)
@@ -169,6 +202,39 @@ void __free_list(Node **list)
     *list = NULL;
 }
 
+int64_t __index_of_char(Node **list, char data)
+{
+    Node *listPtr = *list;
+    __search_data(listPtr, CHAR, data, char, index)
+}
+
+int64_t __index_of_int(Node **list, int data)
+{
+    Node *listPtr = *list;
+    __search_data(listPtr, INT, data, int, index)
+}
+
+int64_t __index_of_double(Node **list, double data)
+{
+    Node *listPtr = *list;
+    __search_data(listPtr, DOUBLE, data, double, index)
+}
+
+int64_t __index_of_string(Node **list, const char* data)
+{
+    Node *listPtr = *list;
+    int64_t index = 0; 
+
+    while (listPtr!=NULL) { 
+        if(listPtr->dataType==STRING) 
+            if(strcmp(listPtr->data, data)==0) break; 
+        listPtr = listPtr->next; 
+        ++index; 
+    } 
+    if(listPtr==NULL) return -1;
+    return index;
+}
+
 /**
  * @brief Checks if the list is empty.
  * @param *list the list pointer
@@ -184,7 +250,7 @@ bool isEmpty(Node *list)
 /**
  * @brief Returns the number of elements in the list.
  * @param *list the list pointer
- * @return the number of elements in the list
+ * @returns the number of elements in the list
 */
 int64_t listLength(Node *list)
 {
