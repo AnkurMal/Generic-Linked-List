@@ -13,12 +13,32 @@
         } \
     } while(0)
 
-#define __check_and_insert(listPtrToPtr, data, dataPtr, dataType, index) \
+#define __check_and_insert(listPtrToPtr, data, nodeDataType, insDataType, index) \
+    insDataType *dataPtr = malloc(sizeof(insDataType)); \
     if(dataPtr==NULL) { \
         puts("WARNING: Not enough memory!"); \
         return; } \
     *dataPtr = data; \
-    __insert_data(listPtrToPtr, dataPtr, dataType, index);
+    __insert_data(listPtrToPtr, dataPtr, nodeDataType, index);
+
+#define __replace_data(listPtrToPtr, nodeDataType, data, replDataType, index) \
+    int64_t length = listLength(*listPtrToPtr); \
+    __assert(index>=0 && index<length, *listPtrToPtr, "Replacing data of index %lld of LinkedList of size %lld.", index, length); \
+    \
+    Node* listPtr = *listPtrToPtr; \
+    for(int64_t i=0; i<index; i++) \
+        listPtr = listPtr->next; \
+    \
+    if(listPtr->dataType!=nodeDataType) { \
+        replDataType *dataPtr = malloc(sizeof(replDataType)); \
+        if(dataPtr==NULL) { \
+            puts("WARNING: Not enough memory!"); \
+            return; } \
+        *dataPtr = data; \
+        free(listPtr->data); \
+        listPtr->data = dataPtr; \
+        listPtr->dataType = nodeDataType; } \
+    else *(replDataType*)(listPtr->data) = data;
 
 #define __remove(listPtrToPtr, nodeDataType, data, remvDataType) \
     Node *listPtr = *listPtrToPtr; \
@@ -42,7 +62,8 @@
         listPtr = listPtr->next; \
         nextPtr = listPtr->next; }
 
-#define __search_data(listPtr, nodeDataType, data, srchDataType, index) \
+#define __search_data(listPtrToPtr, nodeDataType, data, srchDataType) \
+    Node *listPtr = *listPtrToPtr; \
     int64_t index = 0; \
     while (listPtr!=NULL) { \
         if(listPtr->dataType==nodeDataType) \
@@ -55,30 +76,29 @@
 
 void __insert_char(Node **list, char data, int64_t index)
 {
-    char* dataPtr = malloc(sizeof(char));
-    __check_and_insert(list, data, dataPtr, CHAR, index);
+    __check_and_insert(list, data, CHAR, char, index);
 }
 
 void __insert_int(Node **list, int data, int64_t index)
 {   
-    int* dataPtr = malloc(sizeof(int));
-    __check_and_insert(list, data, dataPtr, INT, index);
+    __check_and_insert(list, data, INT, int, index);
 }
 
 void __insert_double(Node **list, double data, int64_t index)
 {   
-    double* dataPtr = malloc(sizeof(double));
-    __check_and_insert(list, data, dataPtr, DOUBLE, index);
+    __check_and_insert(list, data, DOUBLE, double, index);
 }
 
 void __insert_string(Node **list, const char* data, int64_t index)
 {
-    char* dataPtr = malloc(strlen(data)+1);
+    size_t stringLength = strlen(data)+1;
+    char* dataPtr = malloc(stringLength);
+
     if(dataPtr==NULL) { 
         puts("WARNING: Not enough memory!"); 
         return; }
 
-    memcpy(dataPtr, data, strlen(data)+1);
+    memcpy(dataPtr, data, stringLength);
     __insert_data(list, dataPtr, STRING, index);
 }
 
@@ -99,10 +119,12 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
 
     newNode->dataType = dataType;
     newNode->data = dataPtr;
-    newNode->next = NULL;
     
-    if((*list)==NULL)
+    if((*list)==NULL || index==0)
+    {
+        newNode->next = *list;
         *list = newNode;
+    }
     else
     {
         Node *tempNode = *list;
@@ -112,6 +134,43 @@ void __insert_data(Node **list, void* dataPtr, DataType dataType, int64_t index)
         newNode->next = tempNode->next;
         tempNode->next = newNode;
     }
+}
+
+void __replace_char(Node **list, char data, int64_t index)
+{
+    __replace_data(list, CHAR, data, char, index);
+}
+
+void __replace_int(Node **list, int data, int64_t index)
+{
+    __replace_data(list, INT, data, int, index);
+}
+
+void __replace_double(Node **list, double data, int64_t index)
+{
+    __replace_data(list, DOUBLE, data, double, index);
+}
+
+void __replace_string(Node **list, const char* data, int64_t index)
+{
+    int64_t length = listLength(*list); 
+    __assert(index>=0 && index<length, *list, "Replacing data of index %lld of LinkedList of size %lld.", index, length); 
+
+    Node* listPtr = *list;
+    for(int64_t i=0; i<index; i++) 
+        listPtr = listPtr->next;
+
+    size_t stringLength = strlen(data)+1;
+    char* dataPtr = malloc(stringLength);
+
+    if(dataPtr==NULL) { 
+        puts("WARNING: Not enough memory!"); 
+        return; }
+    memcpy(dataPtr, data, stringLength);
+    free(listPtr->data);
+
+    listPtr->data = dataPtr;
+    listPtr->dataType = STRING;
 }
 
 void __remove_char(Node **list, char data)
@@ -204,20 +263,17 @@ void __free_list(Node **list)
 
 int64_t __index_of_char(Node **list, char data)
 {
-    Node *listPtr = *list;
-    __search_data(listPtr, CHAR, data, char, index)
+    __search_data(list, CHAR, data, char)
 }
 
 int64_t __index_of_int(Node **list, int data)
 {
-    Node *listPtr = *list;
-    __search_data(listPtr, INT, data, int, index)
+    __search_data(list, INT, data, int)
 }
 
 int64_t __index_of_double(Node **list, double data)
 {
-    Node *listPtr = *list;
-    __search_data(listPtr, DOUBLE, data, double, index)
+    __search_data(list, DOUBLE, data, double)
 }
 
 int64_t __index_of_string(Node **list, const char* data)
