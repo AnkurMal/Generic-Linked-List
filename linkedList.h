@@ -32,6 +32,11 @@ void __insert_int(Node **list, int data, int64_t index);
 void __insert_double(Node **list, double data, int64_t index);
 void __insert_string(Node **list, const char* data, int64_t index);
 
+void __replace_char(Node **list, char data, int64_t index);
+void __replace_int(Node **list, int data, int64_t index);
+void __replace_double(Node **list, double data, int64_t index);
+void __replace_string(Node **list, const char* data, int64_t index);
+
 void __remove_char(Node **list, char data);
 void __remove_int(Node **list, int data);
 void __remove_double(Node **list, double data);
@@ -72,6 +77,22 @@ void printList(Node *list);
         double:      __insert_double, \
         char*:       __insert_string, \
         const char*: __insert_string, \
+        default:     __invalid_data_type \
+    )(&listPtr, data, index)
+
+/**
+ * @brief Replaces the specified data from the specified index of the list.
+ * @param listPtr pointer to the list
+ * @param data data to be replaced in the list
+ * @param index index from which the specified data is to be replaced
+ * @note For a character data, it should be explicitely converted to char.
+*/
+#define replace(listPtr, data, index) _Generic((data), \
+        char:        __replace_char, \
+        int:         __replace_int, \
+        double:      __replace_double, \
+        char*:       __replace_string, \
+        const char*: __replace_string, \
         default:     __invalid_data_type \
     )(&listPtr, data, index)
 
