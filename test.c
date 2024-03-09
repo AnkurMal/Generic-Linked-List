@@ -5,10 +5,10 @@ int main(void)
 {
     Node *list = initList();
 
-    insertData(list, 5);
-    insertData(list, (char)'A');
-    insertDataAt(list, 56.856, 1);
-    insertData(list, "hello");
+    insert(list, 5);
+    insert(list, (char)'A');
+    insertAt(list, 56.856, 1);
+    insert(list, "hello");
     
     printf("The list is: ");
     printList(list);
