@@ -89,6 +89,7 @@ void __insert_double(Node **list, double data, int64_t index)
     __check_and_insert(list, data, DOUBLE, double, index);
 }
 
+//TODO: To use strcpy instead of memcpy
 void __insert_string(Node **list, const char* data, int64_t index)
 {
     size_t stringLength = strlen(data)+1;
